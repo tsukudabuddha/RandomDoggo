@@ -17,8 +17,44 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
+
+    }
+    
+    func getImage(session: URLSession) {
+        if let url = self.imageURL {
+            let downloadPicTask = session.dataTask(with: url) { (data, response, error) in
+                // The download has finished.
+                if let e = error {
+                    print("Error downloading picture: \(e)")
+                } else {
+                    // Check for response
+                    if let res = response as? HTTPURLResponse {
+                        print("Downloaded picture with response code \(res.statusCode)")
+                        if let imageData = data {
+                            // Finally convert that Data into an image and do what you wish with it.
+                            self.image = UIImage(data: imageData)
+                        } else {
+                            print("Couldn't get image: Image is nil")
+                        }
+                    } else {
+                        print("Couldn't get response code for some reason")
+                    }
+                }
+            }
+            
+            downloadPicTask.resume()
+            
+            if let image = self.image {
+                self.dogImageView.image = image
+            }
+            
+        }
+    }
+    
+    @IBAction func showDoggo(_ sender: Any) {
         let session = URLSession(configuration: .default)
+        let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
         var myRequest = URLRequest(url: URL(string: "https://dog.ceo/api/breeds/image/random")!)
         
         myRequest.httpMethod = "GET"
@@ -30,43 +66,14 @@ class ViewController: UIViewController {
                 self.imageURL = URL(string: (jsonNew["message"] as! String))
             }
         }
+        
         getURLTask.resume()
+        dispatchGroup.leave()
+        dispatchGroup.notify(queue: .main, execute: {
+            self.getImage(session: session)
+        })
         
-        
-    }
-    @IBAction func showDoggo(_ sender: Any) {
-        let session = URLSession(configuration: .default)
-        if let url = self.imageURL {
-            let downloadPicTask = session.dataTask(with: url) { (data, response, error) in
-                // The download has finished.
-                if let e = error {
-                    print("Error downloading cat picture: \(e)")
-                } else {
-                    // No errors found.
-                    // It would be weird if we didn't have a response, so check for that too.
-                    if let res = response as? HTTPURLResponse {
-                        print("Downloaded cat picture with response code \(res.statusCode)")
-                        if let imageData = data {
-                            // Finally convert that Data into an image and do what you wish with it.
-                            self.image = UIImage(data: imageData)
-                            // Do something with your image.
-                            print(self.image.debugDescription)
-                        } else {
-                            print("Couldn't get image: Image is nil")
-                        }
-                    } else {
-                        print("Couldn't get response code for some reason")
-                    }
-                }
-            }
-            downloadPicTask.resume()
-            if let image = self.image {
-                self.dogImageView.image = image
-            }
-            
-        }
-        
-        
+
     }
     
     override func didReceiveMemoryWarning() {
@@ -76,4 +83,5 @@ class ViewController: UIViewController {
 
 
 }
+
 
