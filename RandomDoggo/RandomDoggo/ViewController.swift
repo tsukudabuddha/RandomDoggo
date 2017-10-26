@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     typealias voidCallback = () -> ()
     
     @IBOutlet weak var dogImageView: UIImageView!
-
+    
     private var image: UIImage? = nil
     private var imageURL: URL?
     private var getImageCallback: voidCallback?
@@ -62,6 +62,7 @@ class ViewController: UIViewController {
             }
             
             downloadPicTask.resume()
+            clickCallback?()
         }
     }
     
@@ -83,8 +84,6 @@ class ViewController: UIViewController {
             }
             
             getURLTask.resume()
-            downloadImage()
-            clickCallback?()
         }
         
     }
@@ -93,8 +92,7 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
+    
+    
 }
-
 
