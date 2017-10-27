@@ -34,7 +34,7 @@ class ViewController: UIViewController {
     }
     
     func downloadImage() {
-        let session = URLSession(configuration: .default)
+        let session = URLSession.shared
         if let url = self.imageURL {
             let downloadPicTask = session.dataTask(with: url) { (data, response, error) in
                 // The download has finished.
@@ -69,7 +69,7 @@ class ViewController: UIViewController {
     @IBAction func showDoggo(_ sender: Any) {
         if self.allowClick {
             self.allowClick = false
-            let session = URLSession(configuration: .default)
+            let session = URLSession.shared
             var myRequest = URLRequest(url: URL(string: "https://dog.ceo/api/breeds/image/random")!)
             
             myRequest.httpMethod = "GET"
