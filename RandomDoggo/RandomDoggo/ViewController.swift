@@ -17,7 +17,6 @@ class ViewController: UIViewController {
     private var image: UIImage? = nil
     private var imageURL: URL?
     private var getImageCallback: voidCallback?
-    private var clickCallback: voidCallback?
     private var allowClick: Bool = true
     
     
@@ -26,11 +25,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.getImageCallback = downloadImage
-        self.clickCallback = canClick
-    }
-    
-    func canClick() {
-        self.allowClick = true
     }
     
     func downloadImage() {
@@ -62,7 +56,7 @@ class ViewController: UIViewController {
             }
             
             downloadPicTask.resume()
-            clickCallback?()
+            self.allowClick = true
         }
     }
     
